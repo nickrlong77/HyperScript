@@ -1,4 +1,4 @@
-function [velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction)
+function [velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen)
 %% Variables
 time = 0;
 torque = 0;
@@ -16,7 +16,6 @@ forceDriveArray = [];
 forceDragArray = [];
 forceNetArray = [];
 state = 'acc';
-previousProgress = 0.001;
 %% Numerical Integration
 %while s <= trialDistance
 while v > 0
@@ -27,8 +26,14 @@ while v > 0
         %torque_record = [torque_record, torque];
         forceFrictionBrake = 0;
     elseif strcmp(state,'dec') == 1
+        %if regen == 'on'
         torque = -Torque_curve_reader(RPM,motorPowerKw,maxTorque,maxRPM,transmissionRatio);
         forceFrictionBrake = forceFrictionBrakeMaximum;
+        %{
+        else
+        torque = 0;
+        %}
+        %end
     end
     forceDrag = DragCalc(v,C_d,frontalArea,pressure);
     forceDragArray = [forceDragArray forceDrag];
@@ -54,6 +59,8 @@ while v > 0
     ds = v * dt;
     s = s + ds;
     locationArray = [locationArray s];
+    
+    [ currentRequirement, voltageRequirement, powerRequirement, powerLoss] = EnginePowerAnalysis(kV, kI, torque, v, radius, lowerEfficencyBound);
     
     %Brake distance calculations
     if strcmp(state,'acc') == 1

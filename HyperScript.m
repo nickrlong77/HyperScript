@@ -1,23 +1,43 @@
 %HyperScript
 
 %inputs
-mass = input('Pod mass (kg): ');
-radius = input('Wheel Radius (m): ');
-motorPowerKw = input('Motor power (Kw): ');
-maxTorque = input('Maximum torque (N*m): ');
-maxRPM = input('Maximum RPM: ');
-transmissionRatio = input('Transmission factor: ');
-trialDistance = input('Trial Distance (m): ');
-C_d = input('Coefficient of drag: ');
-frontalArea = input('Frontal area (m^2): ');
-pressure = input('Tube pressure (Pa): ');
-Coeff_Friction = input('Coefficient of friction (brake pads): ');
-forceBrakePneumatic = input('Pneumatic brake force (N): ');
-fprintf('\n-----\nWorking\n')
+default = input('Use defaults? (y/n): ','s');
+if default == 'y'
+    %default characteristics 
+    mass = 125;
+    radius = 0.3;
+    motorPowerKw = 220;
+    maxTorque = 500;
+    maxRPM = 4500;
+    transmissionRatio = 1;
+    trialDistance = 1000;
+    C_d = 0.3;
+    frontalArea = 1;
+    pressure = 900;
+    Coeff_Friction = 0.4;
+    forceBrakePneumatic = 5500;
+    regen = 'on';
+    fprintf('\n-----\nWorking\n')
+else
+    mass = input('Pod mass (kg): ');
+    radius = input('Wheel Radius (m): ');
+    motorPowerKw = input('Motor power (Kw): ');
+    maxTorque = input('Maximum torque (N*m): ');
+    maxRPM = input('Maximum RPM: ');
+    transmissionRatio = input('Transmission factor: ');
+    trialDistance = input('Trial Distance (m): ');
+    C_d = input('Coefficient of drag: ');
+    frontalArea = input('Frontal area (m^2): ');
+    pressure = input('Tube pressure (Pa): ');
+    Coeff_Friction = input('Coefficient of friction (brake pads): ');
+    forceBrakePneumatic = input('Pneumatic brake force (N): ');
+    regen = input('Regenerative Braking? (y/n)', 's');
+    fprintf('\n-----\nWorking\n')
+end
 %%%%%ADD BRAKE FORCE AND COEFF FRICTION TO FUNCTION INPUT
 %Calculate:
 
-[velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction);
+[velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen);
 
 %spacer
 fprintf('-----\n\n')
@@ -40,6 +60,8 @@ forceDragArray
 forceNetArray
 %}
 
+
+%}
 
 %Previous:
 %{

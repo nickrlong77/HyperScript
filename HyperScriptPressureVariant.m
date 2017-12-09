@@ -1,23 +1,38 @@
-%HyperScript
+%HyperScript - AeroEdit
+
+velocityMaximumArray = [];
+maxForceDragArray = [];
+ipressureArray = [0:1000:100000];
+
+
+for ipressure = ipressureArray
 
 %inputs
-mass = input('Pod mass (kg): ');
-radius = input('Wheel Radius (m): ');
-motorPowerKw = input('Motor power (Kw): ');
-maxTorque = input('Maximum torque (N*m): ');
-maxRPM = input('Maximum RPM: ');
-transmissionRatio = input('Transmission factor: ');
-trialDistance = input('Trial Distance (m): ');
-C_d = input('Coefficient of drag: ');
-frontalArea = input('Frontal area (m^2): ');
-pressure = input('Tube pressure (Pa): ');
-Coeff_Friction = input('Coefficient of friction (brake pads): ');
-forceBrakePneumatic = input('Pneumatic brake force (N): ');
-fprintf('\n-----\nWorking\n')
+mass = 125; %input('Pod mass (kg): ');
+radius = .3; %input('Wheel Radius (m): ');
+motorPowerKw = 230; %input('Motor power (Kw): ');
+maxTorque = 500; %input('Maximum torque (N*m): ');
+maxRPM = 5500; %input('Maximum RPM: ');
+transmissionRatio = 1; %input('Transmission factor: ');
+trialDistance = 1000; %input('Trial Distance (m): ');
+C_d = 0.3; %input('Coefficient of drag: ');
+frontalArea = 1; %input('Frontal area (m^2): ');
+pressure = ipressure; %input('Tube pressure (Pa): ');
+Coeff_Friction = .4; %input('Coefficient of friction (brake pads): ');
+forceBrakePneumatic = 5500; %input('Pneumatic brake force (N): ');
+%fprintf('\n-----\nWorking\n')
 %%%%%ADD BRAKE FORCE AND COEFF FRICTION TO FUNCTION INPUT
 %Calculate:
-[velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(app,mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction);
 
+[velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction);
+
+velocityMaximumArray = [velocityMaximumArray, velocityMaximum];
+maxForceDragArray = [maxForceDragArray max(forceDragArray)];
+end
+
+plot(ipressureArray,velocityMaximumArray,ipressureArray,maxForceDragArray)
+
+%{
 %spacer
 fprintf('-----\n\n')
 %Outputs:
@@ -38,11 +53,11 @@ forceDriveArray
 forceDragArray
 forceNetArray
 %}
-
+%}
 
 %Previous:
 %{
-        function [v_top, a_top, time_end, time_record, loc, vel, a_record, Tractive_record, drag_record, net_force_record,max_Q,Stop_distance,final_location] = Numerical_Int_function(app,mass,radius,Power_Kw,Torque_max,RPM_max,transmission_factor,track_dist,C_d,frontal_area,pressure,Coeff_Friction,Brake_force)
+        function [v_top, a_top, time_end, time_record, loc, vel, a_record, Tractive_record, drag_record, net_force_record,max_Q,Stop_distance,final_location] = Numerical_Int_function(mass,radius,Power_Kw,Torque_max,RPM_max,transmission_factor,track_dist,C_d,frontal_area,pressure,Coeff_Friction,Brake_force)
             %% Variables
             time = 0;
             torque = 0;
