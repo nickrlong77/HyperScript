@@ -7,6 +7,6 @@ RPM = v *60 /(2*pi*radius);
 currentRequirement = torque/kI;
 voltageRequirement = RPM/kV;
 powerRequirement = currentRequirement * voltageRequirement;
-powerLoss = powerRequirement * lowerEfficencyBound;
+powerLoss = abs(powerRequirement) * (1-lowerEfficencyBound);
 
 end

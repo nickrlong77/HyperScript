@@ -5,7 +5,7 @@ default = input('Use defaults? (y/n): ','s');
 if default == 'y'
     %default characteristics 
     mass = 125;
-    radius = 0.33;
+    radius = 0.3;
     motorPowerKw = 220;
     maxTorque = 500;
     maxRPM = 4500;
@@ -46,17 +46,15 @@ end
 %[velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen);
 [velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation,currentRequirementArray, voltageRequirementArray, powerRequirementArray, powerLossArray, totalHeatGenerated, totalHeatGeneratedArray] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen,kV,kI,lowerEfficencyBound);
 
-%Plotter
-HyperPlotter(locationArray,velocityArray,forceDragArray,totalHeatGeneratedArray,powerRequirementArray);
+
 %spacer
 fprintf('-----\n\n')
 %Outputs:
-fprintf('-----\n')
 fprintf('Maximum velocity: %.2f \n',velocityMaximum);
 fprintf('Maximum accleration = %.2f m/s^2 \n',accelerationMaximum);
 fprintf('Trial time: %.2f seconds\n',timeEnd);
 fprintf('Maximum dynamic pressure: %.2f Pa\n',maximumDynamicPressure);
-fprintf('Total heat generated: %.2f Joules\n',totalHeatGenerated)
+fprintf('')
 fprintf('Stopping distance: %.2f m\n',decelerationDistance);
 fprintf('Final location: %.2f m\n',finalLocation)
 fprintf('-----\n')
