@@ -16,7 +16,6 @@ forceDriveArray = [];
 forceDragArray = [];
 forceNetArray = [];
 state = 'acc';
-
 currentRequirementArray = [];
 voltageRequirementArray = [];
 powerRequirementArray = [];
@@ -24,71 +23,52 @@ powerLossArray = [];
 totalHeatGenerated = 0;
 totalHeatGeneratedArray = [];
 
-
 %% Numerical Integration
-%while s <= trialDistance
 while v > 0
     if strcmp(state,'acc') == 1
         RPM = v *60 /(2*pi*radius);
         %% Read torque from Torqe_curve_reader function
         torque = Torque_curve_reader(RPM,motorPowerKw,maxTorque,maxRPM,transmissionRatio);
-        %torque_record = [torque_record, torque];
         forceFrictionBrake = 0;
     elseif strcmp(state,'dec') == 1
         %if regen == 'on'
         torque = -Torque_curve_reader(RPM,motorPowerKw,maxTorque,maxRPM,transmissionRatio);
         forceFrictionBrake = forceFrictionBrakeMaximum;
-        %{
-        else
-        torque = 0;
-        %}
-        %end
     end
-    forceDrag = DragCalc(v,C_d,frontalArea,pressure);
-    forceDragArray = [forceDragArray forceDrag];
     %% Update Kinematic Vectors
     time = time + dt;
-    timeArray = [timeArray, time];
     forceDrive = torque/(radius);
-    forceDriveArray = [forceDriveArray, forceDrive];
+    forceDrag = DragCalc(v,C_d,frontalArea,pressure);
     forceNet = forceDrive - forceDrag - forceFrictionBrake;
-    forceNetArray = [forceNetArray, forceNet];
-    %Calculate accleration 'a'
     a = forceNet/mass;
-    %Update velocity
     v = v + a*dt;
-    %add velocity to velocity history vector and accleration to accleration history vector
-    accelerationArray = [accelerationArray a];
-    velocityArray = [velocityArray v];
-    %Update position and add to location history
-    ds = v * dt;
-    s = s + ds;
-    locationArray = [locationArray s];
-    
+    s = s + v * dt;
+    %% Electronic and Thermal Update
+    % Engine Power Analysis
     [currentRequirement, voltageRequirement, powerRequirement, powerLoss] = EnginePowerAnalysis(kV, kI, torque, v, radius, lowerEfficencyBound);
-    
+    % Update Running total heat generation
+    totalHeatGenerated = totalHeatGenerated + powerLoss * dt;
+    %% Update History Arrays
+    timeArray = [timeArray, time];
+    locationArray = [locationArray s];
+    velocityArray = [velocityArray v];
+    accelerationArray = [accelerationArray a];
+    forceDriveArray = [forceDriveArray, forceDrive];
+    forceDragArray = [forceDragArray forceDrag];
+    forceNetArray = [forceNetArray, forceNet];
+    totalHeatGeneratedArray = [totalHeatGeneratedArray, totalHeatGenerated];
     currentRequirementArray = [currentRequirementArray, currentRequirement];
     voltageRequirementArray = [voltageRequirementArray, voltageRequirement];
     powerRequirementArray = [powerRequirementArray, powerRequirement];
     powerLossArray = [powerLossArray, powerLoss];
-    totalHeatGenerated = totalHeatGenerated + powerLoss * dt;
-    totalHeatGeneratedArray = [totalHeatGeneratedArray, totalHeatGenerated];
-    
-    %Brake distance calculations
+    %% Brake distance calculations
     if strcmp(state,'acc') == 1
         decelerationDistance = Stop_dist_calc(v,s,mass,radius,maxRPM,maxTorque, motorPowerKw,transmissionRatio,C_d,frontalArea, pressure,forceFrictionBrakeMaximum,Coeff_Friction,trialDistance);
-        %decelerationDistance = (mass*v^2)/(2*forceFrictionBrakeMaximum);
     end
     %Determine acc/dec state
     if strcmp(state,'acc') == 1
         state = State_conditional(decelerationDistance,s,trialDistance);
     end
-    
-    %{
-                if s + decelerationDistance > trialDistance+1 %&& s + decelerationDistance <= trialDistance + 1
-                    state = 'dec';
-                end
-    %}
 end
 %% Define output variables
 velocityMaximum = max(velocityArray);

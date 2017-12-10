@@ -34,10 +34,10 @@ else
     pressure = input('Tube pressure (Pa): ');
     Coeff_Friction = input('Coefficient of friction (brake pads): ');
     forceBrakePneumatic = input('Pneumatic brake force (N): ');
-    regen = input('Regenerative Braking? (y/n)', 's');
+    regen = input('Regenerative Braking? (y/n): ', 's');
     kV = input('Constant of velocity (RPM/V): ');
     kI = input('Constant of torque (Nm/A): ');
-    lowerEfficencyBound = input('Lower bound of engine efficency (decimal): ');
+    lowerEfficencyBound = input('Lower bound of engine efficiency (decimal): ');
     fprintf('\n-----\nWorking\n')
 end
 %%%%%ADD BRAKE FORCE AND COEFF FRICTION TO FUNCTION INPUT

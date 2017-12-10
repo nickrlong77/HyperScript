@@ -7,7 +7,7 @@ F_braking_history = []; %intitialize another history
 if s + ((mass*v^2)/(2*forceFrictionBrakeMaximum)) >= trialDistance %this is used to speed up the calculation. If the brakes could stop it before the limit, then skip this for now. Only calculate if decelerationDistance will be > decelerationDistance with brakes only.
     while v>0 % if the pod is moving...
         Given_RPM = v *60 /(2*pi*radius); %determine RPM for Torque curve reader
-        F_braking = -(forceFrictionBrakeMaximum)-(Torque_curve_reader(Given_RPM,motorPowerKw, maxTorque, maxRPM,transmissionRatio)/radius) - DragCalc(v,C_d,frontalArea,pressure); % force of "braking" / deceleration = pneumatic force * coeff. Friction + motor regen (same as torque curve, but negative sign) + aero drag
+        F_braking = -forceFrictionBrakeMaximum -(Torque_curve_reader(Given_RPM,motorPowerKw, maxTorque, maxRPM,transmissionRatio)/radius) - DragCalc(v,C_d,frontalArea,pressure); % force of "braking" / deceleration = pneumatic force * coeff. Friction + motor regen (same as torque curve, but negative sign) + aero drag
         a = F_braking/mass; %calculate decel
         v = v + a*dt; %time step to update velocity
         ds = v*dt; % update location based on velocity
