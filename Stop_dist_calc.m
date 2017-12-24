@@ -1,4 +1,4 @@
-function [decelerationDistance] = Stop_dist_calc(v,s,mass,radius, maxRPM,maxTorque, motorPowerKw,transmissionRatio,C_d,frontalArea, pressure,forceFrictionBrakeMaximum,Coeff_Friction, trialDistance)
+function [decelerationDistance] = Stop_dist_calc(v,s,mass,radius, maxRPM,maxTorque, motorPowerKw,transmissionRatio,C_d,frontalArea, pressure,forceFrictionBrakeMaximum, trialDistance)
 %Numerical Integration variables
 dt = 0.001; %timesetp
 decelerationDistance = 0; %initialize decelerationDistance

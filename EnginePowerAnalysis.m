@@ -9,4 +9,5 @@ voltageRequirement = RPM/kV;
 powerRequirement = currentRequirement * voltageRequirement;
 powerLoss = abs(powerRequirement) * (1-lowerEfficencyBound);
 
+
 end

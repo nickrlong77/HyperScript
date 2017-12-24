@@ -1,11 +1,11 @@
-function [velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation,currentRequirementArray, voltageRequirementArray, powerRequirementArray, powerLossArray, totalHeatGenerated, totalHeatGeneratedArray] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen,kV,kI,lowerEfficencyBound)
+function [velocityMaximum, accelerationMaximum, timeEnd, timeArray, locationArray, velocityArray, accelerationArray, forceDriveArray, forceDragArray, forceNetArray,maximumDynamicPressure,decelerationDistance,finalLocation,currentRequirementArray, voltageRequirementArray, powerRequirementArray, powerLossArray, totalHeatGenerated, totalHeatGeneratedArray] = Numerical_Int_function(mass,radius,motorPowerKw,maxTorque,maxRPM,transmissionRatio,trialDistance,C_d,frontalArea,pressure,forceBrakePneumatic,Coeff_Friction,regen,kV,kI,lowerEfficencyBound,rotorInertia)
 %% Variables
 time = 0;
 torque = 0;
 v=0.001;
 a=0;
 s=0;
-dt = 0.001;
+dt = 0.01;
 ds = 0;
 forceFrictionBrakeMaximum = forceBrakePneumatic * Coeff_Friction;
 velocityArray = [];
@@ -23,6 +23,7 @@ powerLossArray = [];
 totalHeatGenerated = 0;
 totalHeatGeneratedArray = [];
 
+mass = mass + EquivalentMassCalculator(rotorInertia,(radius*transmissionRatio));
 %% Numerical Integration
 while v > 0
     if strcmp(state,'acc') == 1
@@ -63,7 +64,7 @@ while v > 0
     powerLossArray = [powerLossArray, powerLoss];
     %% Brake distance calculations
     if strcmp(state,'acc') == 1
-        decelerationDistance = Stop_dist_calc(v,s,mass,radius,maxRPM,maxTorque, motorPowerKw,transmissionRatio,C_d,frontalArea, pressure,forceFrictionBrakeMaximum,Coeff_Friction,trialDistance);
+        decelerationDistance = Stop_dist_calc(v,s,mass,radius,maxRPM,maxTorque, motorPowerKw,transmissionRatio,C_d,frontalArea, pressure,forceFrictionBrakeMaximum,trialDistance);
     end
     %Determine acc/dec state
     if strcmp(state,'acc') == 1

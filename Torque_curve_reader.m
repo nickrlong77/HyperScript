@@ -1,5 +1,3 @@
-
-
 function [torque] = Torque_curve_reader(Given_RPM,motorPowerKw, maxTorque, maxRPM,transmissionRatio)
 maxTorque = maxTorque * (1/transmissionRatio);
 maxRPM = maxRPM * transmissionRatio;
