@@ -1,4 +1,4 @@
-function [validationTrialDistanceRange, validationVelocityArray] = ConstantTorque(trialDistance, mass,torque,radius,maxRPM,forceBrakePneumatic,Coeff_Friction)
+function [validationTrialDistanceRange, validationVelocityArray] = ConstantTorque(trialDistance, mass,torque,radius,transmissionRatio,maxRPM,forceBrakePneumatic,Coeff_Friction,regen)
 %Validation of the HyperScript methodology using assumptions of constant (trialDistance, mass,torque,radius,maxRPM,forceBrakePneumatic,Coeff_Friction)
 %torque and constant brake force
 
@@ -12,16 +12,15 @@ RPM_Max = input('Maximum RPM: ');
 frictionBrakeForce = input('Friction brake force (N): ');
 frictionCoeff = input('Coefficenct of Friction: ');
 %}
-
-stopForce = (forceBrakePneumatic*Coeff_Friction)+(torque/radius);
-velocityLimit = radius*maxRPM*2*pi/60;
+stopForce = (forceBrakePneumatic*Coeff_Friction)+(regen/(transmissionRatio*radius));
+velocityLimit = radius*maxRPM*transmissionRatio*2*pi/60;
 validationVelocityArray = [];
 validationTrialDistanceRange = 0:10:trialDistance;
-stopLocation = 100;
+stopLocation = 100; %This value is not used. Just needs to be initialized
 deceleration = -stopForce/mass;
 for d = validationTrialDistanceRange
     if d < stopLocation        
-    v  = ((2*torque*d)/(mass*radius))^(.5);
+    v  = ((2*torque*d)/(mass*radius*transmissionRatio))^(.5);
     validationVelocityArray = [validationVelocityArray, v];
     stopDistance = (mass*v^2)/(2*stopForce);
     stopLocation = trialDistance - stopDistance;

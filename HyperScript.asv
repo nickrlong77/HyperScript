@@ -1,8 +1,8 @@
 % HyperScript
-% By: Nick Long
+% A numerical integration solver to 
 
-% A numerical integration solver to calculate the predicted trajectory of
-% the Hyperloop pod given a certain set of input values.
+
+
 
 %inputs
 default = input('Use defaults? (y/n): ','s');
